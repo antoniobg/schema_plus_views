@@ -17,7 +17,7 @@ module SchemaPlus::Views
         end
 
         def materialized_views(name = nil) #:nodoc:
-          SchemaMonkey::Middleware::Schema::MaterializedViews.start(connection: self, query_name: name, views: []) { |env|
+          SchemaMonkey::Middleware::Schema::Views.start(connection: self, query_name: name, views: []) { |env|
             sql = <<-SQL
             SELECT matviewname
               FROM pg_matviews
@@ -43,11 +43,11 @@ module SchemaPlus::Views
         end
 
         def materialized_view_definition(matview_name, name = nil) #:nodoc:
-          SchemaMonkey::Middleware::Schema::MaterializedViewDefinition.start(connection: self, matview_name: matview_name, query_name: name) { |env|
+          SchemaMonkey::Middleware::Schema::ViewDefinition.start(connection: self, matview_name: matview_name, query_name: name) { |env|
               result = env.connection.query(<<-SQL, name)
                 SELECT pg_get_viewdef(oid)
                   FROM pg_class
-                WHERE relkind = 'v'
+                WHERE relkind = 'm'
                   AND relname = '#{env.matview_name}'
               SQL
               row = result.first
