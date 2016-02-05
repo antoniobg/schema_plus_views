@@ -50,7 +50,7 @@ module SchemaPlus::Views
 
         # Drop the named view.  Specify :if_exists => true
         # to fail silently if the view doesn't exist.
-        def drop_materialized_view(matview_name, options = {})
+        def drop_materialized_view(matview_name)
           SchemaMonkey::Middleware::Migration::DropMaterializedView.start(connection: self, matview_name: matview_name) do |env|
             matview_name = env.matview_name
             sql = "DROP MATERIALIZED VIEW"
